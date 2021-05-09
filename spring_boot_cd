@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+
+    stages {
+          stage('Copying'){
+              steps{
+                sh 'cp /var/lib/jenkins/workspace/Spring3-CI/target/Spring3HibernateApp.war Spring3HibernateApp.war'
+              }
+            }
+            stage('Deploying'){
+              steps{
+                deploy adapters: [tomcat9(credentialsId: 'ae4bfc54-e641-43b3-b8d4-808289f1c6ba', path: '', url: 'http://localhost:8081/')], contextPath: 'SpringBoot', onFailure: false, war: '**/*.war'
+              }
+            }
+        }
+}

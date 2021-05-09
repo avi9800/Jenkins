@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('downloadin repo') {
+            steps{
+                    git 'https://github.com/opstree/spring3hibernate'
+                }
+            }  
+        stage('building') {
+            steps{
+                    sh 'mvn clean compile'
+                }
+            }
+        stage('testing') {
+            steps{
+                    sh 'mvn test'
+                }
+            }
+        stage('packaging') {
+            steps{
+                    sh 'mvn package'
+                }
+            }
+        stage('report') {
+            steps{
+                    sh 'mvn surefire-report:report'
+                }
+            }
+        }
+        post {
+          success{
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'target/site', reportFiles: 'surefire-report.html', reportName: 'HTML Report', reportTitles: ''])
+              
+          }
+        }
+        
+}
